@@ -1,4 +1,4 @@
-import {condition} from "gooy/aurelia-utils"
+import {Decorators as util} from "gooy/es7-method-decorators";
 
 export class TestClass{
 
@@ -9,17 +9,17 @@ export class TestClass{
     this.debug = true;
   }
 
-  @condition(function(){ return this.authorized===true })
+  @util.condition(function(){ return this.authorized===true })
   conditionTest(){
     this.log.push("conditionTest");
   }
 
-  @condition(function(){ return this.authorized===false })
+  @util.condition(function(){ return this.authorized===false })
   conditionTest2(){
     this.log.push("conditionTest2");
   }
 
-  @condition(
+  @util.condition(
     function(){ return this.authorized===false },
     function(){ return this.debug===true }
   )
@@ -27,7 +27,7 @@ export class TestClass{
     this.log.push("conditionTest3");
   }
 
-  @condition(
+  @util.condition(
     function(){ return this.authorized===false },
     function(){ return this.debug===false }
   )
@@ -35,7 +35,7 @@ export class TestClass{
     this.log.push("conditionTest4");
   }
 
-  @condition([
+  @util.condition([
     function(){ return this.authorized===false },
     function(){ return this.debug===false }
   ],function(){ this.elseExecuted = true })

@@ -1,4 +1,4 @@
-import {curry} from "gooy/aurelia-utils"
+import {Decorators as util} from "gooy/es7-method-decorators";
 
 export class TestClass{
 
@@ -28,19 +28,19 @@ export class TestClass{
     this.e = e;
   }
 
-  @curry("test",["foo"])
+  @util.curry("test",["foo"])
   curryTest(b){
     this.log.push("curryTest");
     this.c = "something";
   }
 
-  @curry("test2",["foo"],["baz"])
+  @util.curry("test2",["foo"],["baz"])
   curryTest2(b){}
 
-  @curry(function(b){ this.test2("foo",b,"baz") })
+  @util.curry(function(b){ this.test2("foo",b,"baz") })
   curryTest3(b){}
 
-  @curry(function(b,d){ this.test3("foo",b,"baz",d,"beta") })
+  @util.curry(function(b,d){ this.test3("foo",b,"baz",d,"beta") })
   curryTest4(b,d){}
 
 }

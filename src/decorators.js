@@ -1,29 +1,8 @@
 /**
- *
- * after: https://github.com/lodash/lodash/blob/master/lodash.js#L7102
- * before: https://github.com/lodash/lodash/blob/master/lodash.js#L7160
- *
- * curry: https://github.com/lodash/lodash/blob/master/lodash.js#L3139
- *        https://github.com/lodash/lodash/blob/master/lodash.js#L7359
- *
- * flow: https://github.com/lodash/lodash/blob/master/lodash.js#L3241
- *       https://github.com/lodash/lodash/blob/master/lodash.js#L7639
- *
- * negate: https://github.com/lodash/lodash/blob/master/lodash.js#L7753
- *
- * memoize: https://github.com/lodash/lodash/blob/master/lodash.js#L7714
- *
- * once: https://github.com/lodash/lodash/blob/master/lodash.js#L7779
- *
- * throttle: https://github.com/lodash/lodash/blob/master/lodash.js#L8012
- * debounce: https://github.com/lodash/lodash/blob/master/lodash.js#L7462
- */
-
-/**
  * Autobind decorator
  * Makes sure a class is always invoked with the `this` binding
  */
-export var autobind = fnDecorator(function(target, key, descriptor){
+export var autobind = createMethodDecorator(function(target, key, descriptor){
   let fn = descriptor.value;
   descriptor.value = function autobound(){
     return fn.bind(this,arguments);
@@ -35,7 +14,7 @@ export var autobind = fnDecorator(function(target, key, descriptor){
  * Chain decorator
  * Makes a class method chainable by always returning `this` automatically.
  */
-export var chain = fnDecorator(function(target, key, descriptor){
+export var chain = createMethodDecorator(function(target, key, descriptor){
   let fn = descriptor.value;
   descriptor.value = function chained(){
     fn.apply(this,arguments);
@@ -84,7 +63,7 @@ export function after(...funcs){
  *
  * @type {Function}
  */
-export var once = fnDecorator(function(target,key, descriptor,mode){
+export var once = createMethodDecorator(function(target,key, descriptor,mode){
   let fn = descriptor.value;
 
   function getCache(t){
@@ -191,7 +170,7 @@ export function condition(...conditions){
  * @return {Function}
  */
 
-export var memoize = fnDecorator(function memoize(target,key, descriptor,mode="first",type="instance"){
+export var memoize = createMethodDecorator(function memoize(target,key, descriptor,mode="first",type="instance"){
 
   let memoized;
 

@@ -1,4 +1,4 @@
-import {before,after} from "gooy/aurelia-utils"
+import {Decorators as util} from "gooy/es7-method-decorators";
 
 export class TestClass{
 
@@ -8,20 +8,20 @@ export class TestClass{
 
   //----------------- Before
 
-  @before(function(){ this.doSomethingBefore('foo','bar') })
+  @util.before(function(){ this.doSomethingBefore('foo','bar') })
   beforeTest(){
     this.log.push("beforeTest");
   }
 
-  @before(function(){ this.doSomethingBefore('foo','bar') })
-  @before(function(){ this.doSomethingBefore('foo2','bar2') })
-  @before(function(){ this.doSomethingBefore2('foo','bar') })
-  @before(function(){ this.doSomethingBefore3('foo','bar') })
+  @util.before(function(){ this.doSomethingBefore('foo','bar') })
+  @util.before(function(){ this.doSomethingBefore('foo2','bar2') })
+  @util.before(function(){ this.doSomethingBefore2('foo','bar') })
+  @util.before(function(){ this.doSomethingBefore3('foo','bar') })
   beforeTest2(){
     this.log.push("beforeTest2");
   }
 
-  @before(
+  @util.before(
     function(){ this.doSomethingBefore('foo','bar') },
     function(){ this.doSomethingBefore2('foo','bar') },
     function(){ this.doSomethingBefore3('foo','bar') }
@@ -45,20 +45,20 @@ export class TestClass{
 
   //----------------- After
 
-  @after(function(){ this.doSomethingAfter('foo','bar') })
+  @util.after(function(){ this.doSomethingAfter('foo','bar') })
   afterTest(){
     this.log.push("afterTest");
   }
 
-  @after(function(){ this.doSomethingAfter('foo','bar') })
-  @after(function(){ this.doSomethingAfter('foo2','bar2') })
-  @after(function(){ this.doSomethingAfter2('foo','bar') })
-  @after(function(){ this.doSomethingAfter3('foo','bar') })
+  @util.after(function(){ this.doSomethingAfter('foo','bar') })
+  @util.after(function(){ this.doSomethingAfter('foo2','bar2') })
+  @util.after(function(){ this.doSomethingAfter2('foo','bar') })
+  @util.after(function(){ this.doSomethingAfter3('foo','bar') })
   afterTest2(){
     this.log.push("afterTest2");
   }
 
-  @after(
+  @util.after(
     function(){ this.doSomethingAfter('foo','bar') },
     function(){ this.doSomethingAfter2('foo','bar') },
     function(){ this.doSomethingAfter3('foo','bar') }
@@ -82,19 +82,19 @@ export class TestClass{
 
   //----------------- Before and After
 
-  @before(function(){ this.doSomethingBefore() })
-  @before(function(){ this.doSomethingBefore2() })
-  @after(function(){ this.doSomethingAfter() })
-  @after(function(){ this.doSomethingAfter2() })
+  @util.before(function(){ this.doSomethingBefore() })
+  @util.before(function(){ this.doSomethingBefore2() })
+  @util.after(function(){ this.doSomethingAfter() })
+  @util.after(function(){ this.doSomethingAfter2() })
   beforeAfterTest(){
     this.log.push("beforeAfterTest");
   }
 
-  @before(
+  @util.before(
     function(){ this.doSomethingBefore() },
     function(){ this.doSomethingBefore2() }
   )
-  @after(
+  @util.after(
     function(){ this.doSomethingAfter() },
     function(){ this.doSomethingAfter2() }
   )

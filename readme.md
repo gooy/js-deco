@@ -14,6 +14,25 @@ Note: some common decorators from lodash will also be added soon like `negate`, 
 ## Installation
 
     jspm install gooy/es7-method-decorators
+    
+## Usage
+
+The decorators can be imported straight from the decorators module
+
+    import {chain,before,after,curry,condition,memoize,once} from "gooy/es7-method-decorators/decorators";
+  
+and use them as
+
+    @chain
+  
+Or the decoratos can be imported as a group from the index
+
+    import {Decorators as util} from "gooy/es7-method-decorators/decorators";
+    
+in which case they can be used as
+
+    @util.chain
+  
 
 ## Decorators
 

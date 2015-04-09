@@ -1,4 +1,4 @@
-import {once} from "gooy/aurelia-utils"
+import {Decorators as util} from "gooy/es7-method-decorators";
 
 export class TestClass{
 
@@ -6,25 +6,24 @@ export class TestClass{
     this.log = [];
   }
 
-  @once
+  @util.once
   onceTest(){
     this.log.push("onceTest");
   }
 
-  @once()
+  @util.once()
   onceTest2(){
     this.log.push("onceTest2");
   }
 
-  @once("throw")
+  @util.once("throw")
   onceTest3(){
     this.log.push("onceTest3");
   }
 
-  @once(function(e){ this.alreadyExecutedError = e })
+  @util.once(function(e){ this.alreadyExecutedError = e })
   onceTest4(){
     this.log.push("onceTest3");
   }
-
 
 }

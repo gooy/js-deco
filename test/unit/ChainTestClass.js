@@ -1,4 +1,4 @@
-import {chain} from "gooy/aurelia-utils";
+import {Decorators as util} from "gooy/es7-method-decorators";
 
 export class TestClass{
 
@@ -6,12 +6,12 @@ export class TestClass{
     this.log = [];
   }
 
-  @chain
+  @util.chain
   chainTest(){
     this.log.push("chainTest");
   }
 
-  @chain()
+  @util.chain()
   chainTest2(){
     this.log.push("chainTest2");
   }
