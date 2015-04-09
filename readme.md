@@ -1,9 +1,6 @@
 # ES7 method decorators
 
 [![GitHub version](https://badge.fury.io/gh/gooy%2Fes7-method-decorators.svg?style=flat-square)](http://badge.fury.io/gh/gooy%2Fes7-method-decorators)
-[![Build Status](https://travis-ci.org/gooy/es7-method-decorators.svg?branch=master&style=flat-square)](https://travis-ci.org/gooy/es7-method-decorators)
-[![Dependency Status](https://david-dm.org/gooy/es7-method-decorators.svg?style=flat-square)](https://david-dm.org/gooy/es7-method-decorators)
-[![devDependency Status](https://david-dm.org/gooy/es7-method-decorators/dev-status.svg?style=flat-square)](https://david-dm.org/gooy/es7-method-decorators#info=devDependencies)  
 [![ES7 format](https://img.shields.io/badge/JS_format-es7-orange.svg?style=flat-square)](http://www.ecmascript.org/)
 [![JSPM](https://img.shields.io/badge/JSPM-gooy/es7--method--decorators-db772b.svg?style=flat-square)](http://jspm.io)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](http://opensource.org/licenses/MIT)
