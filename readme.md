@@ -27,7 +27,7 @@ and use them as
   
 Or the decoratos can be imported as a group from the index
 
-    import {Decorators as util} from "gooy/es7-method-decorators/decorators";
+    import {Decorators as util} from "gooy/es7-method-decorators";
     
 in which case they can be used as
 
