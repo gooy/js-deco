@@ -61,7 +61,7 @@ The example below only calls the `beforeTest` in the constructor, but `doSomethi
 
     @before(function(){ this.doSomethingBefore('foo','bar') })
     beforeTest(){
-      this.log.push("beforeTest");
+      console.log("beforeTest");
     }
     
     doSomethingBefore(a,b){
@@ -85,15 +85,15 @@ Executes other functions after executing the decorated function
 The example below only calls the `afterTest` in the constructor, and `doSomethingAfter` will be executed afterwards. 
 
     constructor(){
-      this.beforeTest()
+      this.afterTest()
     }
 
-    @before(function(){ this.doSomethingBefore('foo','bar') })
-    beforeTest(){
-      this.log.push("beforeTest");
+    @after(function(){ this.doSomethingAfter('foo','bar') })
+    afterTest(){
+      console.log("afterTest");
     }
     
-    doSomethingBefore(a,b){
+    doSomethingAfter(a,b){
       console.log(a,b);
     }
     
