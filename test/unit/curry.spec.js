@@ -1,4 +1,4 @@
-import {TestClass} from "./CurryTestClass"
+import {curry} from "gooy/es7-method-decorators/decorators";
 
 describe('The curry decorator', () =>{
 
@@ -9,9 +9,9 @@ describe('The curry decorator', () =>{
   });
 
   beforeEach(()=>{
-    test.log = [];
+    test = new TestClass();
   });
-
+/*
   it('calls another function with arguments partially applied', () =>{
     test.curryTest("bar");
     expect(test.log.length).toBe(1);
@@ -34,7 +34,7 @@ describe('The curry decorator', () =>{
     expect(test.a).toBe("foo");
     expect(test.b).toBe("bar");
     expect(test.c).toBe("baz");
-  });
+  });*/
 
   it('executes the first argument if it is a function and supplies the missing arguments', () =>{
     test = new TestClass();
@@ -50,7 +50,7 @@ describe('The curry decorator', () =>{
 
   it('can be used with any number of pre supplied arguments in any order', () =>{
     test = new TestClass();
-    test.curryTest4("bar","alpha");
+    test.curryTest4("bar", "alpha");
 
     expect(test.log.length).toBe(1);
     expect(test.log[0]).toBe("test3");
@@ -63,3 +63,40 @@ describe('The curry decorator', () =>{
   });
 
 });
+
+
+class TestClass {
+
+  constructor(){
+    this.log = [];
+  }
+
+  test(a, b){
+    this.log.push("test");
+    this.a = a;
+    this.b = b;
+  }
+
+  test2(a, b, c){
+    this.log.push("test2");
+    this.a = a;
+    this.b = b;
+    this.c = c;
+  }
+
+  test3(a, b, c, d, e){
+    this.log.push("test3");
+    this.a = a;
+    this.b = b;
+    this.c = c;
+    this.d = d;
+    this.e = e;
+  }
+
+  @curry(function(b){ this.test2("foo", b, "baz") })
+  curryTest3(b){}
+
+  @curry(function(b, d){ this.test3("foo", b, "baz", d, "beta") })
+  curryTest4(b, d){}
+
+}

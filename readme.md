@@ -36,6 +36,20 @@ in which case they can be used as
 
 ## Decorators
 
+### @Autobind
+
+Makes sure a method is invoked with the this binding.
+
+    constructor(element){
+      this.foo = "bar";
+      this.element.addEventListener("click",this.onClick)
+    }
+        
+    @autobind
+    onClick(){
+      console.log(this.foo);
+    }
+
 ### @Chain
 
 Makes a class method chainable by always returning `this` automatically.

@@ -1,56 +1,54 @@
-/**
- * Autobind decorator
- * Makes sure a class is always invoked with the `this` binding
- */
-export var autobind = createMethodDecorator(function(target, key, descriptor){
-  let fn = descriptor.value;
-  descriptor.value = function autobound(){
-    return fn.bind(this,arguments);
-  };
-  return descriptor;
-});
+
 
 /**
  * Chain decorator
  * Makes a class method chainable by always returning `this` automatically.
+ * @returns {Function}
  */
-export var chain = createMethodDecorator(function(target, key, descriptor){
-  let fn = descriptor.value;
-  descriptor.value = function chained(){
-    fn.apply(this,arguments);
+export function _chain(fn){
+  return function(){
+    fn.apply(this, arguments);
     return this;
-  };
-  return descriptor;
-});
+  }
+}
 
 /**
  * Before decorator
- * Executes other functions before executing the decorated function
+ * Executes other functions before executing the decorated function.
+ *
+ * @returns {Function}
  */
-export function before(...funcs){
-  return function(target,key, descriptor) {
-    let fn = descriptor.value;
-    descriptor.value = function withBefore(){
-      funcs.map(func=>{func.apply(this,arguments)});
-      fn.apply(this,arguments);
-    };
-    return descriptor;
-  };
+export function _before(fn, args){
+  return function(){
+    args.map(func=>{func.apply(this, arguments)});
+    return fn.apply(this, arguments);
+  }
 }
 
 /**
  * After decorator
- * Executes other functions after executing the decorated function
+ * Executes other functions after executing the decorated function.
+ *
+ * @returns {Function}
  */
-export function after(...funcs){
-  return function(target,key, descriptor) {
-    let fn = descriptor.value;
-    descriptor.value = function withAfter(){
-      fn.apply(this,arguments);
-      funcs.map(func=>{func.apply(this,arguments)});
-    };
-    return descriptor;
-  };
+export function _after(fn, args){
+  return function(){
+    var returnValue = fn.apply(this, arguments);
+    args.map(func=>{func.apply(this, arguments)});
+    return returnValue;
+  }
+}
+
+/**
+ * After decorator
+ * Executes other functions after executing the decorated function.
+ *
+ * @returns {Function}
+ */
+export function _curry(fn, args){
+  return function(){
+    return args[0].apply(this, arguments);
+  }
 }
 
 /**
@@ -61,131 +59,80 @@ export function after(...funcs){
  * if the first parameter is set to "throw" then a "alreadyExecuted" Error will be thrown if the function is called more than once
  * The first parameter can also be a function that will be executed when the decorated function is called more than once.
  *
- * @type {Function}
+ * @returns {Function}
  */
-export var once = createMethodDecorator(function(target,key, descriptor,mode){
-  let fn = descriptor.value;
+export function _once(fn, args, key){
+  var mode = null;
+  if(args) mode = args[0];
 
-  function getCache(t){
-    t.__once__ = t.__once__ || new WeakMap();
-    return t.__once__;
-  }
+  return function(){
+    var cacheProp = "__once__";
+    this[cacheProp] = this[cacheProp] || new WeakMap();
+    let cache = this[cacheProp];
 
-  descriptor.value = function onced(){
-    let cache = getCache(this);
-    var value = cache.get(this[key]);
-    if(value===true) {
+    if(cache.get(this[key]) === true){
       if(mode){
         var error = new Error("alreadyExecuted");
         if(mode === "throw") throw error;
-        if(typeof mode === "function") mode.call(this,error);
+        if(typeof mode === "function") mode.call(this, error);
       }
       return;
     }
-    cache.set(this[key],true);
-    return fn.apply(this,arguments);
-  };
-  return descriptor;
-});
-
-/**
- * Curry decorator
- *
- * Create a new function from another function with partial arguments applied to it
- * The new function will expect the remaining arguments when called.
- *
- * The third argument can be used as post partially applied arguments.
- *
- * @param fnName {String} name of the function to curry
- * @param args        partially supplied arguments for the curried function
- * @param postArgs    partially supplied post arguments for the curried function
- * @return {Function}
- */
-export function curry(fnName,args,postArgs){
-  return function curried(target,key, descriptor) {
-    descriptor.value = function partiallyApplied(...missingArgs){
-
-      if(typeof fnName === "string"){
-        var allArgs = args.concat(missingArgs).concat(postArgs);
-        return this[fnName].apply(this,allArgs);
-      }else{
-        return fnName.apply(this,missingArgs);
-      }
-    };
-    return descriptor;
-  };
+    cache.set(this[key], true);
+    return fn.apply(this, arguments);
+  }
 }
 
 /**
- * Condition decorator
- *
- * Execute a function when a condition is met or an array of conditions.
- *
- * if the first argument is an array of conditions then the second argument can be used as an else function.
+ * After decorator
+ * Executes other functions after executing the decorated function.
  *
  * @returns {Function}
  */
-export function condition(...conditions){
-  return function withCondition(target,key, descriptor) {
-    let fn = descriptor.value;
-    var fnElse;
-    descriptor.value = function (...args){
-      if(conditions[0] instanceof Array){
-        if(conditions.length > 1) fnElse = conditions[1];
-        conditions = conditions[0];
-      }
+export function _condition(fn, conditions){
+  return function(...args){
+    let fnElse;
+    if(conditions[0] instanceof Array){
+      if(conditions.length > 1) fnElse = conditions[1];
+      conditions = conditions[0];
+    }
 
-      var pass = true;
-      conditions.map(condition=>{
-        if(condition.apply(this)!==true) pass = false;
-      });
+    var pass = true;
+    conditions.map(condition=>{
+      if(condition.apply(this) !== true) pass = false;
+    });
 
-      if(pass) return fn.apply(this, args);
-      else if(fnElse && typeof fnElse === "function") return fnElse.apply(this);
+    if(pass) return fn.apply(this, args);
+    else if(fnElse && typeof fnElse === "function") return fnElse.apply(this);
 
-    };
-    return descriptor;
-  };
+  }
 }
 
 /**
- * Memoize decorator
+ * After decorator
+ * Executes other functions after executing the decorated function.
  *
- * Caches the return value of a function and returns that the next time without executing the function again.
- *
- * By default the first argument will be stringified and used as a hash key to determine wether
- * to return the cached value or to execute the function.
- *
- * if the first argument is set to "all" , then all arguments will be stringified and used as the hash key.
- *
- * The first argument can also be a function that will return a hash key to be used.
- *
- * The second argument can be used to specify if the values should be memoized per class or per instance. (`instance` by default)
- *
- * @param key {String||Function}   the hash key
- * @param type {String}   type of memoization to perform
- *                        use `class` execute the function only once for all instances
- *                        use `instance` execute the function once for each instance
- *
- * @return {Function}
+ * @returns {Function}
  */
+export function _memoize(fn, decoratorArgs,key){
 
-export var memoize = createMethodDecorator(function memoize(target,key, descriptor,mode="first",type="instance"){
 
+  let mode = "first";
+  let type = "instance";
   let memoized;
+  if(decoratorArgs.length >= 1) mode = decoratorArgs[0];
+  if(decoratorArgs.length >= 2) type = decoratorArgs[1];
 
-  let fn = descriptor.value;
-
-  if(type==="class") memoized = createCache(target);
+  if(type === "class") memoized = createCache(target);
 
   function createCache(t){
     t.__memoizedResults__ = t.__memoizedResults__ || new WeakMap();
     return t.__memoizedResults__;
   }
 
-  descriptor.value = function(...args){
+  return function(...args){
 
-    if(type==="instance") memoized = createCache(this);
+    if(type === "instance") memoized = createCache(this);
 
     let mapkey = this[key];
     if(!mapkey) throw new Error(`property ${mapkey} not found`);
@@ -193,7 +140,7 @@ export var memoize = createMethodDecorator(function memoize(target,key, descript
     var values = memoized.get(mapkey);
 
     //create new weakmap for this method that caches result according to a hashkey derived from the arguments
-    if(!values) {
+    if(!values){
       values = new Map();
       memoized.set(mapkey, values);
     }
@@ -202,10 +149,10 @@ export var memoize = createMethodDecorator(function memoize(target,key, descript
     var hash;
     if(mode === "first"){
       hash = JSON.stringify(args[0]);
-    }else if (mode === "all"){
+    }else if(mode === "all"){
       hash = JSON.stringify(args);
     }else{
-      hash = mode.apply(this,args);
+      hash = mode.apply(this, args);
     }
     if(!hash) hash = "__noargs__";
 
@@ -215,31 +162,70 @@ export var memoize = createMethodDecorator(function memoize(target,key, descript
     //execute if it wasnt cached already
     if(!value){
       value = fn.apply(this, arguments);
-      values.set(hash,value);
+      values.set(hash, value);
     }
 
     return value;
-  };
-  return descriptor;
+  }
+}
 
-});
+
+/*let methodDecorators = ['chain','after', 'before', 'once', 'condition'];
+ methodDecorators.map(name=>{
+ export var before = createMethodDecorator(_before);
+ });*/
+
+//create es7 method decorators
+export var chain = createMethodDecorator(_chain);
+export var before = createMethodDecorator(_before);
+export var after = createMethodDecorator(_after);
+export var once = createMethodDecorator(_once);
+export var condition = createMethodDecorator(_condition);
+export var memoize = createMethodDecorator(_memoize);
+export var curry = createMethodDecorator(_curry);
+export var autobind = createMethodDecorator(_autobind);
 
 //-------------------- Helpers
 
 /**
- * Creates a function decorator that can be used with or without parenthesis
+ * Creates a es7 method decorator that can be used with or without parenthesis
  *
  * @param fn {Function}   The decorator function to create
  * @returns {Function}
  */
-export function createMethodDecorator(fn){
-  return function functionDecorator(...args){
-    if(args.length > 2){
-      return fn.apply(this,args);
+function createMethodDecorator(fn){
+  return function wrapDecorator(...args){
+
+    if(args.length > 2 && args[2].enumerable !== undefined){
+
+      return decoratorWrapper.apply(this, args.concat([fn]));
     }else{
       return function(...decoratorArgs){
-        return fn.apply(this,decoratorArgs.concat(args));
-      };
+        return decoratorWrapper.apply(this, decoratorArgs.concat([fn, args]));
+      }
     }
+  };
+}
+
+function decoratorWrapper(target, key, descriptor, fn, args){
+  let {get, set, value} = descriptor;
+
+  if(typeof get === "function"){
+    descriptor.get = fn(value, args, key);
+  }else if(typeof set === "function"){
+    descriptor.set = fn(value, args, key);
+  }else if(typeof value === "function"){
+    descriptor.value = fn(value, args, key);
   }
+  return descriptor;
+}
+
+export default function mixin(_instance){
+  let decorators = {};
+  each(methodDecorators, (method) =>{
+    if(has(_instance, method)){
+      decorators[method] = createMethodDecorator(_instance[method]);
+    }
+  });
+  return decorators;
 }

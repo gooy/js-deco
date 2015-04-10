@@ -16,7 +16,7 @@ System.config({
 System.config({
   "map": {
 
-    "gooy/es7-method-decorators": "./src/index",
+    "gooy/es7-method-decorators": "./src",
 
     "aurelia-bootstrapper": "github:aurelia/bootstrapper@0.10.0",
     "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.5.1",

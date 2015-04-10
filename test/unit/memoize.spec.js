@@ -1,4 +1,4 @@
-import {TestClass} from "./MemoizeTestClass"
+import {memoize} from "gooy/es7-method-decorators/decorators";
 
 describe('The memoize decorator', () =>{
 
@@ -49,23 +49,23 @@ describe('The memoize decorator', () =>{
     expect(test.memoizeTest("bar")).toBe("bar");
     expect(test.memoizeTest("bar")).toBe("bar");
 
-    expect(test.memoizeTest("bar","foo")).toBe("bar");
-    expect(test.memoizeTest("bar","foo")).toBe("bar");
+    expect(test.memoizeTest("bar", "foo")).toBe("bar");
+    expect(test.memoizeTest("bar", "foo")).toBe("bar");
 
     expect(test.log.length).toBe(2);
     expect(test.log[0]).toBe("memoizeTest");
     expect(test.log[1]).toBe("memoizeTest");
   });
 
-  it('will stringify all arguments and use it as a hash key if 2nd argument is set to `all`', () =>{
+  it('will stringify all arguments and use it as a hash key if the first argument is set to `all`', () =>{
     expect(test.memoizeTest3()).toBe("foo");
     expect(test.memoizeTest3()).toBe("foo");
 
     expect(test.memoizeTest3("bar")).toBe("bar");
     expect(test.memoizeTest3("bar")).toBe("bar");
 
-    expect(test.memoizeTest3("bar","foo")).toBe("barfoo");
-    expect(test.memoizeTest3("bar","foo")).toBe("barfoo");
+    expect(test.memoizeTest3("bar", "foo")).toBe("barfoo");
+    expect(test.memoizeTest3("bar", "foo")).toBe("barfoo");
 
     expect(test.log.length).toBe(3);
     expect(test.log[0]).toBe("memoizeTest3");
@@ -97,3 +97,42 @@ describe('The memoize decorator', () =>{
   });
 
 });
+
+
+class TestClass {
+
+  constructor(){
+    this.log = [];
+  }
+
+  @memoize()
+  memoizeTest(b){
+    this.log.push("memoizeTest");
+    return b || "foo";
+  }
+
+  @memoize()
+  memoizeTest2(b){
+    this.log.push("memoizeTest2");
+    return b || "foo";
+  }
+
+  @memoize("all")
+  memoizeTest3(...args){
+    this.log.push("memoizeTest3");
+    return args.length ? args.join("") : "foo";
+  }
+
+  @memoize(function(){ return "hash" })
+  memoizeTest4(...args){
+    this.log.push("memoizeTest4");
+    return args.length ? args.join("") : "foo";
+  }
+
+  @memoize(function(arg1){ return arg1 || "hash" })
+  memoizeTest5(...args){
+    this.log.push("memoizeTest5");
+    return args.length ? args.join("") : "foo";
+  }
+
+}

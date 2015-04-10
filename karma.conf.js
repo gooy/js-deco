@@ -25,6 +25,7 @@ module.exports = function(config) {
       // Edit this to your needs
       loadFiles: [
         'src/**/*.js',
+        'src.js',
         'dist/*.js',
         'test/unit/*.js'
       ],
@@ -43,6 +44,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'src/**/*.js': ['babel'],
+      'src.js': ['babel'],
       'test/unit/**/*.js': ['babel']
     },
     'babelPreprocessor': {
