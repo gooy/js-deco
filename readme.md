@@ -13,17 +13,17 @@ A collection of some common decorators for javascript as described by [wycats/ja
 
 ### For the browser
 
-install with JSPM
+Install with JSPM
 
     jspm install js-deco
     
-install with Bower
+Install with Bower
 
     bower install js-deco
     
 ### For node
 
-Using NPM
+Install with NPM
 
     npm install js-deco
     
