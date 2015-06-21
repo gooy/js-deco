@@ -1,5 +1,5 @@
 {
-  "name": "js-decorators",
+  "name": "js-deco",
   "version": "0.0.2",
   "description": "A collection of common javascript decorators",
   "keywords": [
@@ -13,7 +13,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:gooy/js-decorators.git"
+    "url": "git@github.com:gooy/js-deco.git"
   },
   "main": "index.js",
   "directories": {

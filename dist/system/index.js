@@ -1,35 +1,41 @@
-System.register(["./method/after", "./method/before", "./method/chain", "./method/condition", "./method/curry", "./method/memoize", "./method/once"], function (_export) {
+System.register(["./decorators", "./autobind", "./after", "./before", "./chain", "./condition", "./curry", "./memoize", "./once"], function (_export) {
   "use strict";
 
   return {
-    setters: [function (_methodAfter) {
-      _export("after", _methodAfter.after);
+    setters: [function (_decorators) {
+      _export("Decorators", _decorators.Decorators);
+    }, function (_autobind2) {
+      _export("autobind", _autobind2.autobind);
 
-      _export("_after", _methodAfter._after);
-    }, function (_methodBefore) {
-      _export("before", _methodBefore.before);
+      _export("_autobind", _autobind2._autobind);
+    }, function (_after2) {
+      _export("after", _after2.after);
 
-      _export("_before", _methodBefore._before);
-    }, function (_methodChain) {
-      _export("chain", _methodChain.chain);
+      _export("_after", _after2._after);
+    }, function (_before2) {
+      _export("before", _before2.before);
 
-      _export("_chain", _methodChain._chain);
-    }, function (_methodCondition) {
-      _export("condition", _methodCondition.condition);
+      _export("_before", _before2._before);
+    }, function (_chain2) {
+      _export("chain", _chain2.chain);
 
-      _export("_condition", _methodCondition._condition);
-    }, function (_methodCurry) {
-      _export("curry", _methodCurry.curry);
+      _export("_chain", _chain2._chain);
+    }, function (_condition2) {
+      _export("condition", _condition2.condition);
 
-      _export("_curry", _methodCurry._curry);
-    }, function (_methodMemoize) {
-      _export("memoize", _methodMemoize.memoize);
+      _export("_condition", _condition2._condition);
+    }, function (_curry2) {
+      _export("curry", _curry2.curry);
 
-      _export("_memoize", _methodMemoize._memoize);
-    }, function (_methodOnce) {
-      _export("once", _methodOnce.once);
+      _export("_curry", _curry2._curry);
+    }, function (_memoize2) {
+      _export("memoize", _memoize2.memoize);
 
-      _export("_once", _methodOnce._once);
+      _export("_memoize", _memoize2._memoize);
+    }, function (_once2) {
+      _export("once", _once2.once);
+
+      _export("_once", _once2._once);
     }],
     execute: function () {}
   };

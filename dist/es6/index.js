@@ -1,7 +1,10 @@
-export {after,_after} from "./method/after";
-export {before,_before} from "./method/before";
-export {chain,_chain} from "./method/chain";
-export {condition,_condition} from "./method/condition";
-export {curry,_curry} from "./method/curry";
-export {memoize,_memoize} from "./method/memoize";
-export {once,_once} from "./method/once";
+export {Decorators} from "./decorators";
+
+export {autobind,_autobind} from "./autobind";
+export {after,_after} from "./after";
+export {before,_before} from "./before";
+export {chain,_chain} from "./chain";
+export {condition,_condition} from "./condition";
+export {curry,_curry} from "./curry";
+export {memoize,_memoize} from "./memoize";
+export {once,_once} from "./once";

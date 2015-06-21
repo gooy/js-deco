@@ -18,7 +18,7 @@ System.config({
     "babel": "npm:babel-core@5.5.8",
     "babel-runtime": "npm:babel-runtime@5.5.8",
     "core-js": "npm:core-js@0.9.18",
-    "gooy/js-decorators": "github:gooy/js-decorators@0.0.2",
+    "gooy/js-deco": "github:gooy/js-deco@0.0.2",
     "github:jspm/nodelibs-process@0.1.1": {
       "process": "npm:process@0.10.1"
     },
