@@ -1,4 +1,4 @@
-import {curry} from "../../src/index";
+import {curry} from "../../src/curry";
 
 describe('The curry decorator', () =>{
 

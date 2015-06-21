@@ -1,4 +1,4 @@
-import {once} from "../../src/index";
+import {once} from "../../src/once";
 
 describe('The once decorator', () =>{
 

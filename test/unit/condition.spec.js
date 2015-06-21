@@ -1,4 +1,4 @@
-import {condition} from "../../src/index";
+import {condition} from "../../src/condition";
 
 describe('The condition decorator', () =>{
 

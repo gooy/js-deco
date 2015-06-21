@@ -1,4 +1,4 @@
-import {memoize} from "../../src/index";
+import {memoize} from "../../src/memoize";
 
 describe('The memoize decorator', () =>{
 
