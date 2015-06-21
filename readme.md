@@ -15,23 +15,23 @@ A collection of some common decorators for javascript as described by [wycats/ja
 
 install with JSPM
 
-    jspm install github:gooy/js-deco
+    jspm install js-deco
     
 install with Bower
 
-    bower install git://github.com/gooy/js-deco.git#0.0.2
+    bower install js-deco
     
 ### For node
 
 Using NPM
 
-    npm install gooy/js-deco
+    npm install js-deco
     
 ## Usage
 
 The decoratos can be imported as a group:
 
-    import {Decorators as deco} from "gooy/js-deco";
+    import {Decorators as deco} from "js-deco";
     
 In which case they can be used as
 
@@ -46,7 +46,7 @@ In which case they can be used as
     
 Or the decorators can be imported separately:
 
-    import {chain,before,after,curry,condition,memoize,once} from "gooy/js-deco";
+    import {chain,before,after,curry,condition,memoize,once} from "js-deco";
   
 Then they can be used as
 
