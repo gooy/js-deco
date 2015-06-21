@@ -106,3 +106,9 @@ To run the unit tests, first ensure that you have followed the steps above in or
     ```shell
     gulp test
     ```
+
+
+___
+
+We'd love for you to contribute and make this repository better !   
+If this interests you, please begin by reading [our contributing guidelines](CONTRIBUTING.md).
