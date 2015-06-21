@@ -1,23 +1,20 @@
-import {memoize} from "gooy/es7-method-decorators/decorators";
+import {memoize} from "../../src/index";
 
 describe('The memoize decorator', () =>{
 
   let test;
 
-  beforeAll(()=>{
-
-  });
-
-  beforeEach(()=>{
+  beforeEach(function(){
     test = new TestClass();
-    test.log = [];
   });
 
-  it('caches the response of a function and returned the cached value next time the function is called and skips execution', () =>{
+  it('caches the response of a function and returned the cached value the next time the function is called and skips execution', () =>{
+
     expect(test.memoizeTest()).toBe("foo");
     expect(test.memoizeTest()).toBe("foo");
     expect(test.memoizeTest()).toBe("foo");
 
+    //make sure it was only executed once
     expect(test.log.length).toBe(1);
     expect(test.log[0]).toBe("memoizeTest");
   });
@@ -26,6 +23,7 @@ describe('The memoize decorator', () =>{
     expect(test.memoizeTest2()).toBe("foo");
     expect(test.memoizeTest2()).toBe("foo");
 
+    //make sure it was only executed once
     expect(test.log.length).toBe(1);
     expect(test.log[0]).toBe("memoizeTest2");
   });
@@ -111,7 +109,7 @@ class TestClass {
     return b || "foo";
   }
 
-  @memoize()
+  @memoize
   memoizeTest2(b){
     this.log.push("memoizeTest2");
     return b || "foo";

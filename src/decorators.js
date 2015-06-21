@@ -1,231 +1,134 @@
-
-
 /**
- * Chain decorator
- * Makes a class method chainable by always returning `this` automatically.
- * @returns {Function}
+ * Utility functions to create decorators
  */
-export function _chain(fn){
-  return function(){
-    fn.apply(this, arguments);
-    return this;
-  }
-}
+export var Decorators = {
 
-/**
- * Before decorator
- * Executes other functions before executing the decorated function.
- *
- * @returns {Function}
- */
-export function _before(fn, args){
-  return function(){
-    args.map(func=>{func.apply(this, arguments)});
-    return fn.apply(this, arguments);
-  }
-}
-
-/**
- * After decorator
- * Executes other functions after executing the decorated function.
- *
- * @returns {Function}
- */
-export function _after(fn, args){
-  return function(){
-    var returnValue = fn.apply(this, arguments);
-    args.map(func=>{func.apply(this, arguments)});
-    return returnValue;
-  }
-}
-
-/**
- * After decorator
- * Executes other functions after executing the decorated function.
- *
- * @returns {Function}
- */
-export function _curry(fn, args){
-  return function(){
-    return args[0].apply(this, arguments);
-  }
-}
-
-/**
- * Once decorator
- *
- * Makes sure a function is only executed once.
- *
- * if the first parameter is set to "throw" then a "alreadyExecuted" Error will be thrown if the function is called more than once
- * The first parameter can also be a function that will be executed when the decorated function is called more than once.
- *
- * @returns {Function}
- */
-export function _once(fn, args, key){
-  var mode = null;
-  if(args) mode = args[0];
-
-  return function(){
-    var cacheProp = "__once__";
-    this[cacheProp] = this[cacheProp] || new WeakMap();
-    let cache = this[cacheProp];
-
-    if(cache.get(this[key]) === true){
-      if(mode){
-        var error = new Error("alreadyExecuted");
-        if(mode === "throw") throw error;
-        if(typeof mode === "function") mode.call(this, error);
-      }
-      return;
-    }
-    cache.set(this[key], true);
-    return fn.apply(this, arguments);
-  }
-}
-
-/**
- * After decorator
- * Executes other functions after executing the decorated function.
- *
- * @returns {Function}
- */
-export function _condition(fn, conditions){
-  return function(...args){
-    let fnElse;
-    if(conditions[0] instanceof Array){
-      if(conditions.length > 1) fnElse = conditions[1];
-      conditions = conditions[0];
-    }
-
-    var pass = true;
-    conditions.map(condition=>{
-      if(condition.apply(this) !== true) pass = false;
-    });
-
-    if(pass) return fn.apply(this, args);
-    else if(fnElse && typeof fnElse === "function") return fnElse.apply(this);
-
-  }
-}
-
-/**
- * After decorator
- * Executes other functions after executing the decorated function.
- *
- * @returns {Function}
- */
-export function _memoize(fn, decoratorArgs,key){
-
-
-  let mode = "first";
-  let type = "instance";
-  let memoized;
-  if(decoratorArgs.length >= 1) mode = decoratorArgs[0];
-  if(decoratorArgs.length >= 2) type = decoratorArgs[1];
-
-  if(type === "class") memoized = createCache(target);
-
-  function createCache(t){
-    t.__memoizedResults__ = t.__memoizedResults__ || new WeakMap();
-    return t.__memoizedResults__;
-  }
-
-  return function(...args){
-
-    if(type === "instance") memoized = createCache(this);
-
-    let mapkey = this[key];
-    if(!mapkey) throw new Error(`property ${mapkey} not found`);
-
-    var values = memoized.get(mapkey);
-
-    //create new weakmap for this method that caches result according to a hashkey derived from the arguments
-    if(!values){
-      values = new Map();
-      memoized.set(mapkey, values);
-    }
-
-    //create a hash based on the arguments passed to the memoized function
-    var hash;
-    if(mode === "first"){
-      hash = JSON.stringify(args[0]);
-    }else if(mode === "all"){
-      hash = JSON.stringify(args);
-    }else{
-      hash = mode.apply(this, args);
-    }
-    if(!hash) hash = "__noargs__";
-
-    //check if current method was already called with these arguments
-    var value = values.get(hash);
-
-    //execute if it wasnt cached already
-    if(!value){
-      value = fn.apply(this, arguments);
-      values.set(hash, value);
-    }
-
-    return value;
-  }
-}
-
-
-/*let methodDecorators = ['chain','after', 'before', 'once', 'condition'];
- methodDecorators.map(name=>{
- export var before = createMethodDecorator(_before);
- });*/
-
-//create es7 method decorators
-export var chain = createMethodDecorator(_chain);
-export var before = createMethodDecorator(_before);
-export var after = createMethodDecorator(_after);
-export var once = createMethodDecorator(_once);
-export var condition = createMethodDecorator(_condition);
-export var memoize = createMethodDecorator(_memoize);
-export var curry = createMethodDecorator(_curry);
-export var autobind = createMethodDecorator(_autobind);
-
-//-------------------- Helpers
-
-/**
- * Creates a es7 method decorator that can be used with or without parenthesis
- *
- * @param fn {Function}   The decorator function to create
- * @returns {Function}
- */
-function createMethodDecorator(fn){
-  return function wrapDecorator(...args){
-
-    if(args.length > 2 && args[2].enumerable !== undefined){
-
-      return decoratorWrapper.apply(this, args.concat([fn]));
-    }else{
-      return function(...decoratorArgs){
-        return decoratorWrapper.apply(this, decoratorArgs.concat([fn, args]));
+  /**
+   * Create a decorator from a function.
+   * This attempt to create a parameterized or a simple decorator
+   * depending on how the decorator is used
+   *
+   * @param prop          the property or object to decorate
+   *
+   * @returns {Function} a decorator function that returns a property descriptor or target
+   */
+  decorator(prop){
+    return function(...args) {
+      //detect simple method decorators which will have a target, key, descriptor signature
+      if(args.length > 2 && isClass(args[0]) && typeof args[1] === "string" && args[2].configurable){
+        return Decorators.simpleDecorator(args[0],args[1],args[2],{},prop);
+      }else // detect simple class decorator
+      if(args.length > 0 && typeof args[0] === "function" && isClass(args[0])){
+        return prop(args[0]);
+      }else{
+        return Decorators.parameterizedDecorator(prop,args);
       }
     }
-  };
-}
+  },
 
-function decoratorWrapper(target, key, descriptor, fn, args){
-  let {get, set, value} = descriptor;
-
-  if(typeof get === "function"){
-    descriptor.get = fn(value, args, key);
-  }else if(typeof set === "function"){
-    descriptor.set = fn(value, args, key);
-  }else if(typeof value === "function"){
-    descriptor.value = fn(value, args, key);
-  }
-  return descriptor;
-}
-
-export default function mixin(_instance){
-  let decorators = {};
-  each(methodDecorators, (method) =>{
-    if(has(_instance, method)){
-      decorators[method] = createMethodDecorator(_instance[method]);
+  /**
+   * Create a parameterized decorator from a method
+   *
+   * @param prop        function to decorate
+   * @param args        arguments from the decorator
+   *
+   * @returns {Function} a decorator function that returns a property descriptor or target
+   */
+  parameterizedDecorator(prop,args){
+    return function(target,key,descriptor) {
+      if(!target) {
+        //console.log('parameterized class decorator',args,prop);
+        return prop;
+      }
+      return Decorators.simpleDecorator(target,key,descriptor,args,prop);
     }
-  });
-  return decorators;
+  },
+
+  /**
+   *
+   * @param target          the target object (class)
+   * @param key             name of the property to be decorated
+   * @param descriptor      class member descriptor
+   * @param args            arguments from the decorator
+   * @param fn              function that will be used as a decorator
+   *
+   * @returns {Object}    a property descriptor or target
+   */
+  simpleDecorator(target,key,descriptor,args,fn){
+    return fn(target,key,descriptor,args);
+  },
+
+  /**
+   * Create a decorator from a mutator function.
+   * This attempt to create a parameterized or a simple decorator
+   * depending on how the decorator is used.
+   *
+   * @param prop          the property or object to decorate
+   *
+   * @returns {Object}    a property descriptor
+   */
+  mutator(prop){
+    return function(...args) {
+      //test for simple method decorators which will have a target, key, descriptor signature
+      if(args.length > 2 && isClass(args[0]) && typeof args[1] === "string" && args[2].configurable){
+        return Decorators.simpleMutator(args[0],args[1],args[2],{},prop);
+      }else{
+        return Decorators.parameterizedMutator(prop,args);
+      }
+    }
+  },
+
+  /**
+   * Create a parameterized decorator from a mutator function
+   *
+   * @param prop        function to decorate
+   * @param args        arguments from the decorator
+   *
+   * @returns {Function}  a decorator function that returns a property descriptor
+   */
+  parameterizedMutator(prop,args){
+    return function(target,key,descriptor) {
+      return Decorators.simpleMutator(target,key,descriptor,args,prop);
+    }
+  },
+
+  /**
+   * Create a method decorator from a mutator function
+   *
+   * @param target          the target object (class)
+   * @param key             name of the property to be decorated
+   * @param descriptor      class member descriptor
+   * @param args            arguments from the decorator
+   * @param fn              mutator function to create a decorator from
+   *
+   * @returns {Object}      the modified property descriptor
+   */
+  simpleMutator(target,key,descriptor,args,fn){
+    descriptor.value = fn(descriptor.value,args,key);
+    return descriptor;
+  }
+
+};
+
+/**
+ * Test is an object is empty (has no properties or methods).
+ *
+ * @param obj       Object to inspect
+ *
+ * @returns {boolean}   true if object is empty
+ */
+function isEmptyObject( obj ) {
+  return Object.getOwnPropertyNames(obj).length === 0;
+}
+
+/**
+ * Extract classname from a function that represents an ES6 class
+ *
+ * @param obj           Object or function to analyze
+ * @returns {String}    name of the class or null if not found
+ */
+function isClass(obj){
+  //if(typeof obj==="function") obj = new obj();
+  var text = Function.prototype.toString.call(obj.constructor);
+  return (text.match(/_classCallCheck\(this,\w?(.*)\)/)!==null);
 }

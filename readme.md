@@ -1,4 +1,4 @@
-# ES7 method decorators
+# js-decorators
 
 [![GitHub version](https://badge.fury.io/gh/gooy%2Fes7-method-decorators.svg?style=flat-square)](http://badge.fury.io/gh/gooy%2Fes7-method-decorators)
 [![ES7 format](https://img.shields.io/badge/JS_format-es7-orange.svg?style=flat-square)](http://www.ecmascript.org/)
@@ -7,211 +7,102 @@
 [![Built with gulp](http://img.shields.io/badge/built%20with-gulp-red.svg?style=flat-square)](http://gulpjs.com/)
 [![Built with babel](http://img.shields.io/badge/transpiled%20with-babel-bfb222.svg?style=flat-square)](http://babeljs.io/)
 
-This package provides some common method decorators implemented as [ES7 decorators](https://github.com/wycats/javascript-decorators).
-
-Note: some common decorators from lodash will also be added soon like `negate`, `debouce`, `throttle`, `flow` etc...
+A collection of some common decorators for javascript as described by [wycats/javascript-decorators](https://github.com/wycats/javascript-decorators).
 
 ## Installation
 
-    jspm install gooy/es7-method-decorators
+### For the browser
+
+install with JSPM
+
+    jspm install github:gooy/js-decorators
+    
+install with Bower
+
+    bower install git://github.com/gooy/js-decorators.git#0.0.2
+    
+### For node
+
+Using NPM
+
+    npm install gooy/js-decorators
     
 ## Usage
 
-The decorators can be imported straight from the decorators module
+The decoratos can be imported as a group:
 
-    import {chain,before,after,curry,condition,memoize,once} from "gooy/es7-method-decorators/decorators";
-  
-and use them as
-
-    @chain
-  
-Or the decoratos can be imported as a group from the index
-
-    import {Decorators as util} from "gooy/es7-method-decorators";
+    import {Decorators as deco} from "gooy/js-decorators";
     
-in which case they can be used as
+In which case they can be used as
 
-    @util.chain
+    class Foo {
+    
+      @deco.chain
+      someMethod(){
+        
+      }
+      
+    }
+    
+Or the decorators can be imported separately:
+
+    import {chain,before,after,curry,condition,memoize,once} from "gooy/js-decorators";
   
+Then they can be used as
+
+    class Foo {
+        
+      @chain
+      someMethod(){
+        
+      }
+      
+    }
 
 ## Decorators
 
-### @Autobind
-
-Makes sure a method is invoked with the this binding.
-
-    constructor(element){
-      this.foo = "bar";
-      this.element.addEventListener("click",this.onClick)
-    }
-        
-    @autobind
-    onClick(){
-      console.log(this.foo);
-    }
-
-### @Chain
-
-Makes a class method chainable by always returning `this` automatically.
-
-    constructor(){
-      this.chainTest().chainTest().chainTest();
-    }
-        
-    @chain
-    chainTest(){
-      console.log("executing chainTest");
-    }
-
-### @Before
-
-Executes other functions before executing the decorated function.
-
-The example below only calls the `beforeTest` in the constructor, but `doSomethingBefore` will be executed first. 
-
-    constructor(){
-      this.beforeTest()
-    }
-
-    @before(function(){ this.doSomethingBefore('foo','bar') })
-    beforeTest(){
-      console.log("beforeTest");
-    }
-    
-    doSomethingBefore(a,b){
-      console.log(a,b);
-    }
-    
-Any number of arguments can be supplied
-
-    @before(
-      function(){ this.doSomethingBefore('foo','bar') },
-      function(){ this.doSomethingElse() },
-      function(){ this.doSomethingCool() }
-    )
-    beforeTest(){...}
-
-
-### @After
-
-Executes other functions after executing the decorated function
-
-The example below only calls the `afterTest` in the constructor, and `doSomethingAfter` will be executed afterwards. 
-
-    constructor(){
-      this.afterTest()
-    }
-
-    @after(function(){ this.doSomethingAfter('foo','bar') })
-    afterTest(){
-      console.log("afterTest");
-    }
-    
-    doSomethingAfter(a,b){
-      console.log(a,b);
-    }
-    
-Any number of arguments can be supplied.
-
-    @after(
-      function(){ this.doSomethingAfter('foo','bar') },
-      function(){ this.doSomethingElse() },
-      function(){ this.doSomethingCool() }
-    )
-    afterTest(){...}
-
-### @Once
-
-Makes sure a function is only executed once.
-
-    @once
-    foo(){...}
-    
-By default subsequent calls to `foo()` will not be executed and not throw any errors.
-
-If the first argument is set to `throw` it wil throw an `alreadyExecuted` Error on subsequent calls.
-
-    @once("throw")
-    foo(){...}
-    
-The first argument can also be a function that will be executed on subsequent calls.
-
-    @once(function(e){ throw new Error("you already executed me !") })
-    foo(){...}
-
-### @Curry
-
-Create a new function from another function with some arguments already provided.
-  
-    foo(a,b,c,d,e){
-      
-    }
-      
-    @curry(function(b,d){ this.foo("foo",b,"baz",d,"beta") })
-    bar(b,d){}
-    
-The above creates the bar function that can be called with 2 arguments `"bar"` and `"alpha", 
-that will call the foo function with 5 arguments in the followin order `"foo","bar","baz","alpha","beta"`. 
-
-Note that the bar function does not need a function body as it will not be executed.
-
-### @Condition
-
-Execute a function when a condition is met or an array of conditions.
-
-This example will only execute the foo function if `this.authorized` is `true`
-
-    @condition(function(){ return this.authorized===true })
-    foo(){...}
-    
-Multiple conditions can be used :
-
-    @condition(
-      function(){ return this.authorized===true },
-      function(){ return this.debug===false }
-    )
-    foo(){...}
-    
-If the first argument is an array of conditions then the second argument can be used as an else function.
-
-    @condition([
-      function(){ return this.authorized===false },
-      function(){ return this.debug===false }
-    ],function(){ this.router.redirect("unauthorized") })
-    foo(){...}
-
-### @Memoize
-
-Caches the return value of a function and returns that the next time without executing the function again.
-
-In the following example the foo function can be called multiple times but it will only be executed once.
-
-    @memoize
-    foo(){ return "bar" }
-  
-  
-By default the first argument will be stringified and used as a hash key to determine wether to return the cached value or to execute the function.
-If the first argument is set to "all" , then all arguments will be stringified and used as the hash key.
-
-    @memoize("all")
-    foo(){ return "bar" }
-
-The first argument can also be a function that will return a hash key to be used.
-
-    @memoize(function(){ return "hash" })
-    foo(){ return "bar" }
-    
-The hash function receives the arguments that will be passed to the foo function.
-
-    @memoize(function(title){ return title })
-    foo(title){ return title }
-
-The second argument can be used to specify if the values should be memoized per class or per instance. (`instance` by default)
-Setting this to `class` will execute the function only once for all future instances of the class.
-
-    @memoize(function(){ return "hash" },"class")
-    foo(b){ return "bar" }
+  - [@after](doc/after.md)
+  - [@autobind](doc/autobind.md)
+  - [@before](doc/before.md)
+  - [@chain](doc/chain.md)
+  - [@condition](doc/condition.md)
+  - [@curry](doc/curry.md)
+  - [@memoize](doc/memoize.md)
+  - [@once](doc/once.md)
 
 ---
+
+Have a look at the unit tests for more detailed examples.
+
+
+## Running The Tests
+
+To run the unit tests, first ensure that you have followed the steps above in order to install all dependencies and successfully build the library. Once you have done that, proceed with these additional steps:
+
+1. Ensure that the [Karma](http://karma-runner.github.io/) CLI is installed. If you need to install it, use the following command:
+
+    ```shell
+    npm install -g karma-cli
+    ```
+2. Ensure that [jspm](http://jspm.io/) is installed. If you need to install it, use the following commnand:
+
+    ```shell
+    npm install -g jspm
+    ```
+3. Download the [SystemJS](https://github.com/systemjs/systemjs) module loader:
+
+    ```shell
+    jspm dl-loader
+    ```
+
+4. You can now run the tests with this command:
+
+    ```shell
+    karma start
+    ```
     
-Have a look at the unit tests for more examples.
+    Or by running the fulp task
+    
+    ```shell
+    gulp test
+    ```

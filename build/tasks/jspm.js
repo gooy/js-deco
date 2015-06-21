@@ -1,16 +1,9 @@
-/*jshint node:true*/
+var gulp = require('gulp');
+var shell = require('child-process-promise');
+
 /**
  * Link this packages with jspm
- *
- * The package can then be installed from the local cache using:
- * `jspm install --link endpoint:namespace/name@semver`
- *
  */
-var gulp = require('gulp');
-var shell = require('shell-promise');
-
-gulp.task('jspm-link', function () {
-  return shell.exec("jspm link -y " + gulp.config.pkg.endpoint + ":" + gulp.config.pkg.namespace+"/"+gulp.config.pkg.name + "@" + gulp.config.pkg.version).then(function () {
-
-  });
+gulp.task('jspm-link',['build'], function () {
+  return shell.exec("jspm link -y github:gooy/"+gulp.pkg.name);
 });

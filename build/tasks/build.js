@@ -1,42 +1,75 @@
 var gulp = require('gulp');
-var runSequence = require('run-sequence');
+var runSequence = require('run-sequence').use(gulp);
 var changed = require('gulp-changed');
 var plumber = require('gulp-plumber');
 var babel = require('gulp-babel');
 var sourcemaps = require('gulp-sourcemaps');
-var paths = require('../paths');
 var compilerOptions = require('../babel-options');
 var assign = Object.assign || require('object.assign');
+var del = require('del');
+var fs = require('graceful-fs');
+var mkdirp = require('mkdirp');
+var vinylPaths = require('vinyl-paths');
+var ncp = require('ncp').ncp;
+var dirs = gulp.pkg.directories;
 
-// transpiles changed es6 files to SystemJS format
-// the plumber() call prevents 'pipe breaking' caused
-// by errors from other gulp plugins
-// https://www.npmjs.com/package/gulp-plumber
+/**
+ * Transpile es6 code into the dist directory as systemjs
+ */
 gulp.task('build-system', function () {
-  return gulp.src(paths.source)
-  //.pipe(plumber())
-  //.pipe(changed(paths.output, {extension: '.js'}))
+  return gulp.src(dirs.lib+"/**/*.js")
   .pipe(sourcemaps.init())
   .pipe(babel(assign({}, compilerOptions, {modules:'system'})))
-  .pipe(sourcemaps.write({includeContent: false, sourceRoot: '/' + paths.root }))
-  .pipe(gulp.dest(paths.output));
+  .pipe(sourcemaps.write("."))
+  .pipe(gulp.dest(dirs.build + '/system'));
 });
 
-// copies changed html files to the output directory
+gulp.task('build-es6', function () {
+  return gulp.src(dirs.lib+"/**/*.js")
+  .pipe(gulp.dest(dirs.build + '/es6'));
+});
+
+gulp.task('build-commonjs', function () {
+  return gulp.src(dirs.lib+"/**/*.js")
+  .pipe(sourcemaps.init())
+  .pipe(babel(assign({}, compilerOptions, {modules:'common'})))
+  .pipe(sourcemaps.write("."))
+  .pipe(gulp.dest(dirs.build + '/commonjs'));
+});
+
+gulp.task('build-amd', function () {
+  return gulp.src(dirs.lib+"/**/*.js")
+  .pipe(sourcemaps.init())
+  .pipe(babel(assign({}, compilerOptions, {modules:'amd'})))
+  .pipe(sourcemaps.write("."))
+  .pipe(gulp.dest(dirs.build + '/amd'));
+});
+
+/**
+ * Copies html files to the dist directory
+ */
 gulp.task('build-html', function () {
-  return gulp.src(paths.html)
-  .pipe(changed(paths.output, {extension: '.html'}))
-  .pipe(gulp.dest(paths.output));
+  return gulp.src(dirs.lib+"/**/*.html")
+  .pipe(changed(dirs.build, {extension: '.html'}))
+  .pipe(gulp.dest(dirs.build+"/system"));
 });
 
-// this task calls the clean task (located
-// in ./clean.js), then runs the build-system
-// and build-html tasks in parallel
-// https://www.npmjs.com/package/gulp-run-sequence
-gulp.task('build', function(callback) {
+
+/**
+ * Clean the dist direcotry
+ */
+gulp.task('clean-dist', function() {
+  return gulp.src([gulp.pkg.directories.build])
+  .pipe(vinylPaths(del));
+});
+
+/**
+ * Clean the dist directory first then build the files.
+ */
+gulp.task('build', function(done) {
   return runSequence(
-    'clean',
-    ['build-system', 'build-html'],
-    callback
+    'clean-dist',
+    ['build-es6', 'build-commonjs', 'build-amd', 'build-system','build-html'],
+    done
   );
 });

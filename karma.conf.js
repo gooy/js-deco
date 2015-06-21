@@ -19,14 +19,8 @@ module.exports = function(config) {
     ],
 
     jspm: {
-      //config: "config-karma.js",
-      //packages: "jspm_packages",
-
-      // Edit this to your needs
       loadFiles: [
         'src/**/*.js',
-        'src.js',
-        'dist/*.js',
         'test/unit/*.js'
       ],
       serveFiles: [
@@ -39,12 +33,10 @@ module.exports = function(config) {
     exclude: [
     ],
 
-
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'src/**/*.js': ['babel'],
-      'src.js': ['babel'],
       'test/unit/**/*.js': ['babel']
     },
     'babelPreprocessor': {
@@ -60,7 +52,6 @@ module.exports = function(config) {
         compact: false,
         code:true,
         stage:0
-
       }
     },
 

@@ -1,4 +1,4 @@
-import {curry} from "gooy/es7-method-decorators/decorators";
+import {curry} from "../../src/index";
 
 describe('The curry decorator', () =>{
 

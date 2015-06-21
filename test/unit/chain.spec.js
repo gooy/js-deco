@@ -1,4 +1,6 @@
-import {chain} from "gooy/es7-method-decorators/decorators";
+import {chain} from "../../src/chain";
+
+let log;
 
 describe('The chain decorator', () => {
 
@@ -14,39 +16,41 @@ describe('The chain decorator', () => {
 
   it('makes a function automatically return `this`', () => {
 
+    log = jasmine.createSpy("log");
+
     expect(test.chainTest("foo") instanceof TestClass).toBe(true);
+    expect(log.calls.count()).toBe(1);
+    expect(log).toHaveBeenCalledWith("foo");
+
     expect(test.chainTest().chainTest()).toEqual(test);
 
-     expect(test.log.length).toBe(3);
-     expect(test.log[0]).toBe("chainTest");
-     expect(test.log[1]).toBe("chainTest");
-     expect(test.log[2]).toBe("chainTest");
+    expect(log.calls.count()).toBe(3);
+
   });
 
-  /* it('can be used with or wihout parenthesis', () => {
-   expect(test.chainTest2().chainTest2()).toEqual(test);
+   it('can be used with or wihout parenthesis', () => {
 
-   expect(test.log.length).toBe(2);
-   expect(test.log[0]).toBe("chainTest2");
-   expect(test.log[1]).toBe("chainTest2");
-   });*/
+     log = jasmine.createSpy("log");
+
+     expect(test.chainTest2().chainTest2()).toEqual(test);
+     expect(log.calls.count()).toBe(2);
+
+   });
 
 });
 
 class TestClass{
 
-  constructor(){
-    this.log = [];
+  @chain()
+  chainTest(v){
+    log(v);
   }
 
   @chain
-  chainTest(v){
-    this.log.push("chainTest");
-  }
-
-  @chain()
-  chainTest2(){
-    this.log.push("chainTest2");
+  chainTest2(v){
+    log(v);
   }
 
 }
+
+function log(){}

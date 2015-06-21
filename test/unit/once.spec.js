@@ -1,12 +1,8 @@
-import {once} from "gooy/es7-method-decorators/decorators";
+import {once} from "../../src/index";
 
 describe('The once decorator', () =>{
 
   let test;
-
-  beforeAll(()=>{
-
-  });
 
   beforeEach(function(){
     test = new TestClass();

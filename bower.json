@@ -1,0 +1,28 @@
+{
+  "name": "js-decorators",
+  "version": "0.0.2",
+  "homepage": "https://github.com/gooy/js-decorators",
+  "authors": [
+    "Aaike Van Roekeghem <aaikevr@gmail.com>"
+  ],
+  "description": "A collection of some common decorators for javascript",
+  "main": "dist/amd/index.js",
+  "moduleType": [
+    "amd",
+    "es6",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "javascript",
+    "decorators"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

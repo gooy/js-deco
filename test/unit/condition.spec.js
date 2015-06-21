@@ -1,4 +1,4 @@
-import {condition} from "gooy/es7-method-decorators/decorators";
+import {condition} from "../../src/index";
 
 describe('The condition decorator', () =>{
 
