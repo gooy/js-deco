@@ -101,7 +101,7 @@ To run the unit tests, first ensure that you have followed the steps above in or
     karma start
     ```
     
-    Or by running the fulp task
+    Or by running the gulp task
     
     ```shell
     gulp test
