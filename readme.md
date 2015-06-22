@@ -29,7 +29,7 @@ Install with NPM
 
 The decorators can be imported as a group:
 
-    import {Decorators as deco} from "js-deco";
+    import * as deco from "js-deco";
     
 In which case they can be used as
 
