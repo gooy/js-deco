@@ -1,6 +1,6 @@
 # js-deco
 
-[![GitHub version](https://badge.fury.io/gh/gooy%2Fjs-decorators.svg?style=flat-square)](http://badge.fury.io/gh/gooy%2Fjs-decorators)
+[![GitHub version](https://badge.fury.io/gh/gooy%2Fjs-deco.svg?style=flat-square)](http://badge.fury.io/gh/gooy%2Fjs-deco)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![Built with gulp](http://img.shields.io/badge/built%20with-gulp-red.svg?style=flat-square)](http://gulpjs.com/)
 [![Built with babel](http://img.shields.io/badge/transpiled%20with-babel-bfb222.svg?style=flat-square)](http://babeljs.io/)
