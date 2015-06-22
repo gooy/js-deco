@@ -1,8 +1,6 @@
 # js-deco
 
-[![GitHub version](https://badge.fury.io/gh/gooy%2Fes7-method-decorators.svg?style=flat-square)](http://badge.fury.io/gh/gooy%2Fes7-method-decorators)
-[![ES7 format](https://img.shields.io/badge/JS_format-es7-orange.svg?style=flat-square)](http://www.ecmascript.org/)
-[![JSPM](https://img.shields.io/badge/JSPM-gooy/es7--method--decorators-db772b.svg?style=flat-square)](http://jspm.io)
+[![GitHub version](https://badge.fury.io/gh/gooy%2Fjs-decorators.svg?style=flat-square)](http://badge.fury.io/gh/gooy%2Fjs-decorators)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![Built with gulp](http://img.shields.io/badge/built%20with-gulp-red.svg?style=flat-square)](http://gulpjs.com/)
 [![Built with babel](http://img.shields.io/badge/transpiled%20with-babel-bfb222.svg?style=flat-square)](http://babeljs.io/)
@@ -29,7 +27,7 @@ Install with NPM
     
 ## Usage
 
-The decoratos can be imported as a group:
+The decorators can be imported as a group:
 
     import {Decorators as deco} from "js-deco";
     
